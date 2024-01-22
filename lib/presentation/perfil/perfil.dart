@@ -113,7 +113,7 @@ class PPerfilAdminScreen extends StatelessWidget {
           child: IconButton(
             icon: Icon(Icons.menu),
             onPressed: () {
-              //link google maps ?
+              _scaffoldKey.currentState?.openDrawer();
             },
           ),
         ),

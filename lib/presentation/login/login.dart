@@ -63,40 +63,11 @@ class PLoginScreen extends StatelessWidget {
                             onTapHome(context);
                           }),
                       SizedBox(height: 15.v),
-                      SizedBox(
-                          height: 64.v,
-                          width: 175.h,
-                          child: Stack(
-                              alignment: Alignment.bottomCenter,
-                              children: [
-                                Align(
-                                    alignment: Alignment.topCenter,
-                                    child: SizedBox(
-                                        width: 175.h,
-                                        child: RichText(
-                                            text: TextSpan(children: [
-                                              TextSpan(
-                                                  text: "Criar Conta",
-                                                  style: CustomTextStyles
-                                                      .bodyMedium15,
-                                                  recognizer:
-                                                      TapGestureRecognizer()
-                                                        ..onTap = () {
-                                                          onTapSignup(context);
-                                                        })
-                                            ]),
-                                            textAlign: TextAlign.center))),
-                              ]))
                     ])))));
   }
 
   // Navega para o Home
   onTapHome(BuildContext context) {
     Navigator.pushNamed(context, AppRoutes.pHome);
-  }
-
-  // Navega para o Sign Up
-  onTapSignup(BuildContext context) {
-    Navigator.pushNamed(context, AppRoutes.pSign_Up);
   }
 }
