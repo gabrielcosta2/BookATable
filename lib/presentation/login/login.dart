@@ -31,14 +31,14 @@ class _PLoginScreenState extends State<PLoginScreen> {
               children: [
                 SizedBox(height: 25.v),
                 SizedBox(
-                  height: 244.v,
+                  height: 344.v,
                   width: 266.h,
                   child: Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
                       CustomImageView(
                         imagePath: ImageConstant.imgCapturaDeEcr,
-                        height: 190.v,
+                        height: 300.v,
                         width: 202.h,
                         alignment: Alignment.topCenter,
                       ),
