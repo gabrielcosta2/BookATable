@@ -21,7 +21,7 @@ class BookTable extends StatelessWidget {
       theme: theme,
       title: 'Book a Table!',
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.pHome, //Seleciona onde é o HOME
+      initialRoute: AppRoutes.pLogin, //Seleciona onde é o HOME
       routes: AppRoutes.routes,
     );
   }

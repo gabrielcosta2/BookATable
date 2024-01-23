@@ -1,5 +1,6 @@
 import 'package:book_a_table/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:book_a_table/widgets/auth_service.dart';
 
 class NavBar extends StatelessWidget {
   @override
@@ -38,11 +39,20 @@ class NavBar extends StatelessWidget {
             leading: Icon(Icons.logout),
             title: Text('Log Out'),
             onTap: () {
-              //ADICIONAR LOG OUT
+              _performLogout(context);
             },
           ),
         ],
       ),
     );
   }
+}
+
+void _performLogout(BuildContext context) async {
+  await AuthService.logout();
+
+  // Use a Future.microtask to perform navigation after the current microtask is complete.
+  Future.microtask(() {
+    Navigator.pushReplacementNamed(context, AppRoutes.pLogin);
+  });
 }

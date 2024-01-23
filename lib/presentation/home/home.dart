@@ -6,6 +6,7 @@ import 'package:book_a_table/widgets/custom_elevated_button.dart';
 import 'package:book_a_table/widgets/app_bar/appbar_leading_image.dart';
 import 'package:book_a_table/main.dart';
 import 'package:book_a_table/widgets/app_bar/hamburger_menu.dart';
+import 'package:book_a_table/widgets/auth_service.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -15,85 +16,105 @@ class PHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     mediaQueryData = MediaQuery.of(context);
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: Header(context),
-      drawer: Drawer(
-        child: NavBar(), // Use the Sidebar widget here
-      ),
-      body: Column(
-        children: [
-          Container(
-            width: double.maxFinite,
-            padding: EdgeInsets.symmetric(horizontal: 13.h, vertical: 14.v),
-            child: Column(
+    return FutureBuilder<bool>(
+      future: AuthService.checkAuthState(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          bool isAuthenticated = snapshot.data ?? false;
+
+          if (!isAuthenticated) {
+            // User is not authenticated, navigate back to the login screen
+            Navigator.pushReplacementNamed(context, AppRoutes.pLogin);
+            return Container(); // Return an empty container to prevent further rendering
+          }
+
+          // Continue with the rest of your home screen code
+          return Scaffold(
+            key: _scaffoldKey,
+            appBar: Header(context),
+            drawer: Drawer(
+              child: NavBar(), // Use the Sidebar widget here
+            ),
+            body: Column(
               children: [
-                SizedBox(height: 7.v),
-                ImagemRestaurante(context),
-                SizedBox(height: 5.v),
-                Padding(
-                  padding: EdgeInsets.only(left: 9.h, right: 89.h),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                Container(
+                  width: double.maxFinite,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 13.h, vertical: 14.v),
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: Column(
+                      SizedBox(height: 7.v),
+                      ImagemRestaurante(context),
+                      SizedBox(height: 5.v),
+                      Padding(
+                        padding: EdgeInsets.only(left: 9.h, right: 89.h),
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Rota dos Sabores",
-                              style: theme.textTheme.headlineSmall,
-                            ),
-                            Container(
-                              width: 173.h,
-                              margin: EdgeInsets.only(right: 32.h),
-                              child: Text(
-                                "Horário de Funcionamento:\n12:00-15:00\n19:00-00:00",
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                style: CustomTextStyles
-                                    .bodyMediumSecondaryContainer13,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Rota dos Sabores",
+                                    style: theme.textTheme.headlineSmall,
+                                  ),
+                                  Container(
+                                    width: 173.h,
+                                    margin: EdgeInsets.only(right: 32.h),
+                                    child: Text(
+                                      "Horário de Funcionamento:\n12:00-15:00\n19:00-00:00",
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: CustomTextStyles
+                                          .bodyMediumSecondaryContainer13,
+                                    ),
+                                  ),
+                                ],
                               ),
+                            ),
+                            CustomImageView(
+                              imagePath: ImageConstant.imgMedicalIconRestaurant,
+                              height: 24.v,
+                              width: 25.h,
+                              margin: EdgeInsets.only(left: 9.h, top: 3.v),
                             ),
                           ],
                         ),
                       ),
-                      CustomImageView(
-                        imagePath: ImageConstant.imgMedicalIconRestaurant,
-                        height: 24.v,
-                        width: 25.h,
-                        margin: EdgeInsets.only(left: 9.h, top: 3.v),
-                      ),
+                      Text("Menu", style: theme.textTheme.headlineSmall),
                     ],
                   ),
                 ),
-                Text("Menu", style: theme.textTheme.headlineSmall),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    child: ListView.builder(
+                      itemCount: Alimento.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          padding: EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(Alimento[index].comida),
+                              Text(Alimento[index].preco.toString() + "€"),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ],
             ),
-          ),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.all(10),
-              child: ListView.builder(
-                itemCount: Alimento.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    padding: EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(Alimento[index].comida),
-                        Text(Alimento[index].preco.toString() + "€"),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: BotaoReserva(context),
+            bottomNavigationBar: BotaoReserva(context),
+          );
+        } else {
+          // Show loading indicator or something else while checking auth state
+          return CircularProgressIndicator();
+        }
+      },
     );
   }
 
