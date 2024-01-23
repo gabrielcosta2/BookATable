@@ -76,7 +76,7 @@ class _PLoginScreenState extends State<PLoginScreen> {
                 SizedBox(height: 15.v),
                 if (showError)
                   Text(
-                    "Erro - Dados Errados",
+                    "Erro - Credenciais Erradas",
                     style: TextStyle(color: Colors.red),
                   ),
               ],
