@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:book_a_table/core/app_export.dart';
 import 'package:book_a_table/widgets/app_bar/appbar_leading_image.dart';
 import 'package:book_a_table/widgets/app_bar/appbar_title.dart';
 import 'package:book_a_table/widgets/app_bar/custom_app_bar.dart';
-import 'package:book_a_table/main.dart';
 import 'package:book_a_table/presentation/reservas/reservas_editar.dart';
 import 'package:book_a_table/widgets/app_bar/hamburger_menu.dart';
+import 'package:book_a_table/services/reservas_service.dart';
 
+// Chave global para acesso ao ScaffoldState
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class PReservasAdminScreen extends StatefulWidget {
@@ -17,17 +19,38 @@ class PReservasAdminScreen extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<PReservasAdminScreen> {
+  // Referência à coleção 'reservas' no Firestore
+  final CollectionReference reservasCollection =
+      FirebaseFirestore.instance.collection('reservas');
+
+  // Serviço para manipulação de reservas
+  final ReservasService _reservaservice = ReservasService();
+
+  // Função assíncrona para remover uma reserva do Firestore
+  Future reservaRemove(reserva rev1) async {
+    return reservasCollection.get().then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        if (doc.id == rev1.id) {
+          reservasCollection.doc(doc.id).delete();
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Obter a data atual
     DateTime today = DateTime.now();
     String dateStr = "${today.day}-${today.month}-${today.year}";
 
+    // Obter informações sobre a mídia do dispositivo
     mediaQueryData = MediaQuery.of(context);
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: Header(context),
       drawer: Drawer(
-        child: NavBar(), // Use the Sidebar widget here
+        child: NavBar(),
       ),
       body: Column(children: [
         Container(
@@ -76,19 +99,31 @@ class _MyWidgetState extends State<PReservasAdminScreen> {
             ])),
         Expanded(
             child: Container(
-                padding: EdgeInsets.all(10),
-                child: ListView.builder(
-                    itemCount: rev.length,
-                    itemBuilder: (BuildContext context, int index) {
+          padding: EdgeInsets.all(10),
+          child: StreamBuilder<List<reserva>>(
+              stream: _reservaservice.getReservas(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Erro: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('Sem Reservas'));
+                } else {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      reserva reserva1 = snapshot.data![index];
                       return Container(
                           padding: EdgeInsets.all(10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                  rev[index].pessoas.toString() + " Pessoa(s)"),
-                              Text(rev[index].horas + " Horas"),
-                              Text(rev[index].nome),
+                              Text(reserva1.quantidade.toString() +
+                                  " Pessoa(s)"),
+                              Text(reserva1.horas +
+                                  " ${reserva1.dia.day}/${reserva1.dia.month}/${reserva1.dia.year}"),
+                              Text(reserva1.nome),
                               IconButton(
                                   onPressed: () {
                                     Navigator.push(
@@ -96,26 +131,30 @@ class _MyWidgetState extends State<PReservasAdminScreen> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 PGinaReservasEditarScreen(
-                                                  r1: rev[index],
+                                                  r1: reserva1,
                                                 )));
                                   },
                                   icon: Icon(Icons.edit)),
                               IconButton(
                                   onPressed: () {
-                                    rev.removeAt(index);
+                                    reservaRemove(reserva1);
                                     Navigator.pushNamed(
                                         context, AppRoutes.pReservas_Admin);
                                   },
                                   icon: Icon(Icons.remove_circle))
                             ],
                           ));
-                    })))
+                    },
+                  );
+                }
+              }),
+        ))
       ]),
     );
   }
 }
 
-/// Section Widget
+// Função que retorna o widget AppBar personalizado
 PreferredSizeWidget Header(BuildContext context) {
   return CustomAppBar(
     leadingWidth: 70.h,
@@ -145,18 +184,17 @@ PreferredSizeWidget Header(BuildContext context) {
   );
 }
 
-/// Navigates to the pGinaPrincipalScreen when the action is triggered.
+// Função que navega para a tela inicial
 onTapCapturaDeEcr(BuildContext context) {
   Navigator.pushNamed(context, AppRoutes.pHome);
 }
 
-/// Navigates to the pGinaPrincipalScreen when the action is triggered.
+// Função que navega para a tela inicial
 onTapBookATable(BuildContext context) {
   Navigator.pushNamed(context, AppRoutes.pHome);
 }
 
-/// Navigates to the pGinaMenuBurguerAbertoOneScreen when the action is triggered.
+// Função que navega para a tela de reservas no menu
 onTapMingcuteMenuFill(BuildContext context) {
-  //FUNCAO PARA O  QUE FAZ QUANDO CLICA NO HAMBURGUER
   Navigator.pushNamed(context, AppRoutes.pReservas_Admin);
 }

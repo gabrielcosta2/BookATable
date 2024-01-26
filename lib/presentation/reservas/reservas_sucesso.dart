@@ -3,14 +3,20 @@ import 'package:book_a_table/core/app_export.dart';
 import 'package:book_a_table/widgets/app_bar/appbar_leading_image.dart';
 import 'package:book_a_table/widgets/app_bar/appbar_title.dart';
 import 'package:book_a_table/widgets/app_bar/custom_app_bar.dart';
-import 'package:book_a_table/main.dart';
 import 'package:book_a_table/widgets/app_bar/hamburger_menu.dart';
+import 'package:book_a_table/services/reservas_service.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-class PReservaSucessoScreen extends StatelessWidget {
-  const PReservaSucessoScreen({Key? key}) : super(key: key);
+class PReservaSucessoScreen extends StatefulWidget {
+  const PReservaSucessoScreen({Key? key, required this.r1}) : super(key: key);
+  final reserva r1;
 
+  @override
+  State<PReservaSucessoScreen> createState() => _PReservaSucessoScreenState();
+}
+
+class _PReservaSucessoScreenState extends State<PReservaSucessoScreen> {
   @override
   Widget build(BuildContext context) {
     mediaQueryData = MediaQuery.of(context);
@@ -18,13 +24,11 @@ class PReservaSucessoScreen extends StatelessWidget {
     DateTime today = DateTime.now();
     String dateStr = "${today.day}-${today.month}-${today.year}";
 
-    reserva reservaAtual = rev.last;
-
     return Scaffold(
         key: _scaffoldKey,
         appBar: Header(context),
         drawer: Drawer(
-          child: NavBar(), // Use the Sidebar widget here
+          child: NavBar(),
         ),
         body: Container(
             width: double.maxFinite,
@@ -90,11 +94,11 @@ class PReservaSucessoScreen extends StatelessWidget {
                       "Detalhes:\nDia " +
                           dateStr +
                           "\nMorada do Restaurante:\nAv. dos Descobrimentos, 333\n4400-103 Santa Marinha - V.N.Gaia\nMesa para " +
-                          reservaAtual.pessoas.toString() +
+                          widget.r1.quantidade.toString() +
                           " Pessoa(s)\nHoras: " +
-                          reservaAtual.horas +
+                          widget.r1.horas +
                           "\nNome: " +
-                          reservaAtual.nome,
+                          widget.r1.nome,
                       maxLines: 8,
                       overflow: TextOverflow.ellipsis,
                       style: CustomTextStyles.bodyMediumLightgreen800)),
@@ -102,7 +106,7 @@ class PReservaSucessoScreen extends StatelessWidget {
             ])));
   }
 
-  /// Section Widget
+  /// Widget da barra de navegação personalizada.
   PreferredSizeWidget Header(BuildContext context) {
     return CustomAppBar(
       leadingWidth: 70.h,
@@ -132,19 +136,18 @@ class PReservaSucessoScreen extends StatelessWidget {
     );
   }
 
-  /// Navigates to the pGinaPrincipalScreen when the action is triggered.
+  /// Navega para a tela principal ao tocar na imagem.
   onTapCapturaDeEcr(BuildContext context) {
     Navigator.pushNamed(context, AppRoutes.pHome);
   }
 
-  /// Navigates to the pGinaPrincipalScreen when the action is triggered.
+  /// Navega para a tela principal ao tocar no título.
   onTapBookATable(BuildContext context) {
     Navigator.pushNamed(context, AppRoutes.pHome);
   }
 
-  /// Navigates to the pGinaMenuBurguerAbertoOneScreen when the action is triggered.
+  /// Navega para a tela de reservas ao tocar no ícone do menu.
   onTapMingcuteMenuFill(BuildContext context) {
     Navigator.pushNamed(context, AppRoutes.pReservas_Admin);
-    //FUNCAO PARA O  QUE FAZ QUANDO CLICA NO HAMBURGUER
   }
 }

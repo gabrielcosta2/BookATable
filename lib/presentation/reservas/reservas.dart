@@ -1,12 +1,12 @@
-// ignore_for_file: body_might_complete_normally_nullable
-
+import 'package:book_a_table/presentation/reservas/reservas_sucesso.dart';
+import 'package:book_a_table/services/reservas_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:book_a_table/core/app_export.dart';
 import 'package:book_a_table/widgets/app_bar/appbar_leading_image.dart';
 import 'package:book_a_table/widgets/app_bar/appbar_title.dart';
 import 'package:book_a_table/widgets/app_bar/custom_app_bar.dart';
 import 'package:book_a_table/widgets/custom_elevated_button.dart';
-import 'package:book_a_table/main.dart';
 import 'package:flutter/services.dart';
 import 'package:book_a_table/widgets/app_bar/hamburger_menu.dart';
 
@@ -25,6 +25,21 @@ class _MyPGinaReservasScreenState extends State<PReservasScreen> {
   TextEditingController ndePessoasController = TextEditingController();
   TextEditingController NomeController = TextEditingController();
 
+  final CollectionReference reservasCollection =
+      FirebaseFirestore.instance.collection('reservas');
+
+  // Função assíncrona para adicionar uma reserva ao Firestore
+  Future<void> addReserva() async {
+    reservasCollection.add({
+      'nome': NomeController.text,
+      'quantidade': int.parse(ndePessoasController.text),
+      'horas': selectHoras,
+      'dia': Timestamp.fromDate(DateTime.now()),
+    });
+  }
+
+  reserva? r1; // Variável para armazenar a reserva criada
+
   @override
   Widget build(BuildContext context) {
     mediaQueryData = MediaQuery.of(context);
@@ -32,7 +47,7 @@ class _MyPGinaReservasScreenState extends State<PReservasScreen> {
       key: _scaffoldKey,
       appBar: Header(context),
       drawer: Drawer(
-        child: NavBar(), // Use the Sidebar widget here
+        child: NavBar(), // Utilize o widget Sidebar aqui
       ),
       body: Container(
           width: double.maxFinite,
@@ -99,6 +114,7 @@ class _MyPGinaReservasScreenState extends State<PReservasScreen> {
                               if (value!.isEmpty) {
                                 return "Erro - Insira o número de pessoas";
                               }
+                              return null;
                             },
                           )),
                       SizedBox(height: 22.v),
@@ -119,7 +135,7 @@ class _MyPGinaReservasScreenState extends State<PReservasScreen> {
                               );
                             }).toList(),
                             onChanged: (String? value) {
-                              // This is called when the user selects an item.
+                              // Esta função é chamada quando o usuário seleciona um item.
                               setState(() {
                                 selectHoras = value!;
                               });
@@ -140,6 +156,7 @@ class _MyPGinaReservasScreenState extends State<PReservasScreen> {
                               if (value!.isEmpty) {
                                 return "Erro - Insira um nome";
                               }
+                              return null;
                             },
                           )),
                       SizedBox(height: 22.v),
@@ -150,12 +167,23 @@ class _MyPGinaReservasScreenState extends State<PReservasScreen> {
                               left: 86.h, right: 86.h, bottom: 23.v),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              rev.add(reserva(
+                              addReserva();
+
+                              r1 = reserva(
+                                  id: "1",
                                   nome: NomeController.text,
+                                  quantidade:
+                                      int.parse(ndePessoasController.text),
                                   horas: selectHoras,
-                                  pessoas:
-                                      int.parse(ndePessoasController.text)));
-                              onTapLetsBook(context);
+                                  dia: DateTime.now());
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PReservaSucessoScreen(
+                                          r1: r1!,
+                                        )),
+                              );
                             }
                           }),
                     ])),
@@ -164,7 +192,6 @@ class _MyPGinaReservasScreenState extends State<PReservasScreen> {
   }
 }
 
-/// Section Widget
 PreferredSizeWidget Header(BuildContext context) {
   return CustomAppBar(
     leadingWidth: 70.h,
@@ -194,26 +221,22 @@ PreferredSizeWidget Header(BuildContext context) {
   );
 }
 
-/// Navigates to the pGinaPrincipalScreen when the action is triggered.
+/// Navega para a tela principal ao tocar na imagem.
 onTapCapturaDeEcr(BuildContext context) {
   Navigator.pushNamed(context, AppRoutes.pHome);
 }
 
-/// Navigates to the pGinaPrincipalScreen when the action is triggered.
+/// Navega para a tela principal ao tocar no título.
 onTapBookATable(BuildContext context) {
   Navigator.pushNamed(context, AppRoutes.pHome);
 }
 
-/// Navigates to the pGinaMesaReservadaComSucessoScreen when the action is triggered.
-onTapLetsBook(BuildContext context) {
-  Navigator.pushNamed(context, AppRoutes.pReserva_Sucesso);
-}
-
+// Função de navegação para a tela de administração de reservas
 onTapMingcuteMenuFill(BuildContext context) {
   Navigator.pushNamed(context, AppRoutes.pReservas_Admin);
-  //FUNCAO PARA O  QUE FAZ QUANDO CLICA NO HAMBURGUER
 }
 
+// Lista de horários disponíveis para reserva
 List<String> horas = <String>[
   "12:00",
   "13:00",

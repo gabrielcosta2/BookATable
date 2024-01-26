@@ -1,4 +1,4 @@
-package com.teste.app
+package com.BookATable.app
 
 import io.flutter.embedding.android.FlutterActivity
 

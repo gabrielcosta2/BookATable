@@ -24,7 +24,7 @@ class PPerfilAdminScreen extends StatelessWidget {
         key: _scaffoldKey,
         appBar: Header(context),
         drawer: Drawer(
-          child: NavBar(), // Use the Sidebar widget here
+          child: NavBar(), // Utilize o widget Sidebar aqui
         ),
         body: Form(
             key: _formKey,
@@ -64,7 +64,7 @@ class PPerfilAdminScreen extends StatelessWidget {
                           padding: EdgeInsets.only(left: 2.h),
                           child: CustomTextFormField(
                               controller: emailController,
-                              hintText: "rotadossabores@gmail.com",
+                              hintText: "rotadosabores@gmail.com",
                               textInputAction: TextInputAction.done,
                               textInputType: TextInputType.emailAddress,
                               contentPadding: EdgeInsets.symmetric(
@@ -91,7 +91,7 @@ class PPerfilAdminScreen extends StatelessWidget {
                     ]))));
   }
 
-  /// Section Widget
+  /// Widget da Secção
   PreferredSizeWidget Header(BuildContext context) {
     return CustomAppBar(
       leadingWidth: 70.h,
@@ -121,7 +121,7 @@ class PPerfilAdminScreen extends StatelessWidget {
     );
   }
 
-  // Navega para o Home
+  // Navegar para a página inicial
   onTapHome(BuildContext context) {
     Navigator.pushNamed(context, AppRoutes.pHome);
   }

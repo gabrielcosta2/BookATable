@@ -38,8 +38,8 @@ class _PLoginScreenState extends State<PLoginScreen> {
                     children: [
                       CustomImageView(
                         imagePath: ImageConstant.imgCapturaDeEcr,
-                        height: 300.v,
-                        width: 202.h,
+                        height: 250.v,
+                        width: 250.h,
                         alignment: Alignment.topCenter,
                       ),
                       Align(
@@ -89,7 +89,7 @@ class _PLoginScreenState extends State<PLoginScreen> {
 
   void _performLogin(BuildContext context) async {
     setState(() {
-      showError = false; // Reset error state
+      showError = false; // Resetar estado de erro
     });
 
     bool isAuthenticated = await AuthService.login(
@@ -98,12 +98,12 @@ class _PLoginScreenState extends State<PLoginScreen> {
     );
 
     if (isAuthenticated) {
-      // Use a Future.microtask to perform navigation after the current microtask is complete.
+      // Utilizar um Future.microtask para realizar a navegação após a conclusão da tarefa atual.
       Future.microtask(() {
         Navigator.pushReplacementNamed(context, AppRoutes.pHome);
       });
     } else {
-      // Handle login failure
+      // Lidar com falha no login
       setState(() {
         showError = true;
       });

@@ -1,15 +1,19 @@
+import 'package:book_a_table/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:book_a_table/theme/theme_helper.dart';
 import 'package:book_a_table/routes/app_routes.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
 
-  ///Please update theme as per your need if required.
   ThemeHelper().changeTheme('primary');
   runApp(BookTable());
 }
@@ -27,20 +31,6 @@ class BookTable extends StatelessWidget {
   }
 }
 
-class reserva {
-  String nome;
-  String horas;
-  int pessoas;
-  reserva({required this.nome, required this.horas, required this.pessoas});
-}
-
-List<reserva> rev = [
-  reserva(nome: 'Gordon Ramsay', horas: '12:00', pessoas: 4),
-  reserva(nome: 'Martha Stewart', horas: '19:00', pessoas: 3),
-  reserva(nome: 'Marie Antoinette', horas: '20:00', pessoas: 2),
-  reserva(nome: 'Paulo Portela', horas: '22:00', pessoas: 5)
-];
-
 class login {
   String email;
   String password;
@@ -48,7 +38,7 @@ class login {
 }
 
 List<login> Login = [
-  login(email: 'rotadosabores@gmail.com', password: 'CM2023_24')
+  login(email: 'rotadosabores@gmail.com', password: '12345')
 ];
 
 class menu {
@@ -57,6 +47,7 @@ class menu {
   menu({required this.comida, required this.preco});
 }
 
+//Lista do Menu
 List<menu> Alimento = [
   menu(comida: 'Ameijoas à Bulhão Pato', preco: 10),
   menu(comida: 'Burrata c/ Tomate Confit e Pesto', preco: 6),

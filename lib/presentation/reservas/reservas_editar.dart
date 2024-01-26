@@ -1,16 +1,18 @@
 // ignore_for_file: body_might_complete_normally_nullable
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:book_a_table/core/app_export.dart';
 import 'package:book_a_table/widgets/app_bar/appbar_leading_image.dart';
 import 'package:book_a_table/widgets/app_bar/appbar_title.dart';
 import 'package:book_a_table/widgets/app_bar/custom_app_bar.dart';
 import 'package:book_a_table/widgets/custom_elevated_button.dart';
-import 'package:book_a_table/main.dart';
 import 'package:flutter/services.dart';
 import 'package:book_a_table/presentation/reservas/reservas.dart';
 import 'package:book_a_table/widgets/app_bar/hamburger_menu.dart';
+import 'package:book_a_table/services/reservas_service.dart';
 
+// Chave global para acesso ao ScaffoldState
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class PGinaReservasEditarScreen extends StatefulWidget {
@@ -25,14 +27,43 @@ class PGinaReservasEditarScreen extends StatefulWidget {
 
 class _MyPGinaReservasEditarScreenState
     extends State<PGinaReservasEditarScreen> {
+  // Chave global para acesso ao formulário
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String selectHoras = horas.first;
   TextEditingController ndePessoasController = TextEditingController();
   TextEditingController NomeController = TextEditingController();
 
+  // Referência à coleção 'reservas' no Firestore
+  final CollectionReference reservasCollection =
+      FirebaseFirestore.instance.collection('reservas');
+
+  // Função assíncrona para atualizar uma reserva no Firestore
+  Future reservaUpdate(reserva rev1) async {
+    return reservasCollection.get().then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        if (doc.id == rev1.id) {
+          // Atualizar informações da reserva no Firestore
+          reservasCollection.doc(doc.id).update({
+            "nome": NomeController.text,
+            "quantidade": int.parse(ndePessoasController.text),
+            "horas": selectHoras,
+            "dia": Timestamp.fromDate(DateTime.now())
+          });
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Obter informações sobre a mídia do dispositivo
     mediaQueryData = MediaQuery.of(context);
+
+    // Preencher os campos com os valores atuais da reserva
+    NomeController.text = widget.r1.nome;
+    ndePessoasController.text = widget.r1.quantidade.toString();
+    selectHoras = widget.r1.horas; //FAZ APARECER OS VALORES A EDITAR
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: Header(context),
@@ -124,7 +155,6 @@ class _MyPGinaReservasEditarScreenState
                               );
                             }).toList(),
                             onChanged: (String? value) {
-                              // This is called when the user selects an item.
                               setState(() {
                                 selectHoras = value!;
                               });
@@ -155,15 +185,9 @@ class _MyPGinaReservasEditarScreenState
                               left: 86.h, right: 86.h, bottom: 23.v),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              int ind = 0;
-                              ind = rev.indexOf(widget.r1);
-
-                              rev[ind] = reserva(
-                                  nome: NomeController.text,
-                                  horas: selectHoras,
-                                  pessoas:
-                                      int.parse(ndePessoasController.text));
-
+                              // Chamar função de atualização da reserva
+                              reservaUpdate(widget.r1);
+                              // Navegar para a lista de reservas após editar
                               onTapLista(context);
                             }
                           }),
@@ -173,7 +197,7 @@ class _MyPGinaReservasEditarScreenState
   }
 }
 
-/// Section Widget
+// Função que cria o widget do cabeçalho da tela
 PreferredSizeWidget Header(BuildContext context) {
   return CustomAppBar(
     leadingWidth: 70.h,
@@ -203,6 +227,7 @@ PreferredSizeWidget Header(BuildContext context) {
   );
 }
 
+// Função que navega para a lista de reservas após a edição
 onTapLista(BuildContext context) {
   Navigator.pushNamed(context, AppRoutes.pReservas_Admin);
 }
