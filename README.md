@@ -1,26 +1,25 @@
-# BookATable
- Phone app for a local restaurant staff to make table reservations
+# SparesRequest
+ The Spare Parts Requester System is a user-friendly web application designed to streamline the process of requesting spare parts for machines.
 
-Aplicação de Reserva para um Restaurante Local.
+Sistema de Pedido/Gestão de Peças Sobresselentes
 
 Visão Geral
 
-    Os utilizadores conseguem ver o Menu do Restaurante e podem também fazer reservas online (indicando o Nº de Pessoas, a hora e o nome em que fica a reserva), recebendo uma notificação da confirmação desta mesma.
+    Os utilizadores conseguem ver a sua maquina com base no código de série e depois ver um menu de spare parts no qual conseguem selecionar as peças que desejam e adicionar ao carrinho para enviar essa informação à empresa responsável pelas máquinas.
 
 Características
 
-    Lista Reservas: Lista utilizada para mostrar reservas já registadas ao iniciar o programa;
-    Lista Menu: Lista utilizada para mostrar um menu na página inicial, com o nome da comida e o respetivo preço;
-    Booking de Reservas (CREATE): Utilizador consegue criar Reservas;
-    Lista de Reservas (READ): Entregar informação ao utilizador de todas as reservas;
-    Alterar Reservas (UPDATE): Editar reservas e guardar as informações na lista;
-    Apagar Reservas (DELETE): Apagar reserva selecionada pelo utilizador.
+    Lista Maquinas: Lista utilizada para mostrar as maquinas existentes e procurar pelo código;
+    Lista Spares: Lista das peças especificas de cada máquina selecionada;
+    Cart: Carrinho para guardar as peças que o utilizador escolheu;
 
 Pastas
 
-    lib/presentation: onde é possivel encontrar todas as páginas;
-    lib/routes: aqui estão os caminhos de cada pagina;
-    lib/theme: onde se encontram parte dos custom widgets com o tema do projeto;
-    lib/widgets: onde se encontram os widgets e onde está feita a subdivisão dos mesmos em categorias.
+    Pages/Spares: onde é possivel encontrar todas as páginas do sistema de spares;
+      --> Machines.cshtml Pagina onde aparece a lista das maquinas;
+      --> MachineSpares.cshtml Pagina onde são atribuidas e mostradas as peças da maquina selecionada pelo utilizador;
+      --> Cart.cshtml Pagina do carrinho.
+      
+    Index.cshtml: home da aplicação;
 
-Feito por : Trabalho Nº3 (Gabriel Costa Nº2021100993, Margarida Fazenda Nº2021101983)
+Feito por : Gabriel Costa
