@@ -1,25 +1,17 @@
-# SparesRequest
- The Spare Parts Requester System is a user-friendly web application designed to streamline the process of requesting spare parts for machines.
+# BookATable
+ Phone app for a local restaurant staff to make table reservations
 
-Sistema de Pedido/Gestão de Peças Sobresselentes
+Aplicação de Reserva para um Restaurante Local.
 
 Visão Geral
 
-    Os utilizadores conseguem ver a sua maquina com base no código de série e depois ver um menu de spare parts no qual conseguem selecionar as peças que desejam e adicionar ao carrinho para enviar essa informação à empresa responsável pelas máquinas.
+    Os utilizadores conseguem ver o Menu do Restaurante e podem também fazer reservas online (indicando o Nº de Pessoas, a hora e o nome em que fica a reserva), recebendo uma notificação da confirmação desta mesma.
 
 Características
 
-    Lista Maquinas: Lista utilizada para mostrar as maquinas existentes e procurar pelo código;
-    Lista Spares: Lista das peças especificas de cada máquina selecionada;
-    Cart: Carrinho para guardar as peças que o utilizador escolheu;
-
-Pastas
-
-    Pages/Spares: onde é possivel encontrar todas as páginas do sistema de spares;
-      --> Machines.cshtml Pagina onde aparece a lista das maquinas;
-      --> MachineSpares.cshtml Pagina onde são atribuidas e mostradas as peças da maquina selecionada pelo utilizador;
-      --> Cart.cshtml Pagina do carrinho.
-      
-    Index.cshtml: home da aplicação;
-
-Feito por : Gabriel Costa
+    Lista Reservas: Lista utilizada para mostrar reservas já registadas ao iniciar o programa;
+    Lista Menu: Lista utilizada para mostrar um menu na página inicial, com o nome da comida e o respetivo preço;
+    Booking de Reservas (CREATE): Utilizador consegue criar Reservas;
+    Lista de Reservas (READ): Entregar informação ao utilizador de todas as reservas;
+    Alterar Reservas (UPDATE): Editar reservas e guardar as informações na lista;
+    Apagar Reservas (DELETE): Apagar reserva selecionada pelo utilizador.
